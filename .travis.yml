@@ -13,11 +13,11 @@ install:
 
 script:
   # Correr test de la aplicacion (unit, integration, etc.)
-  - python manage.py test
+  - cd djangoapp && python manage.py test && cd ..
   # Chequeo de dependencias
   - docker pull owasp/dependency-check
   - mkdir dependency-check-data
-  - docker run -i --volume dependency-check-data:/usr/share/dependency-check/data --volume "$(pwd)":/src owasp/dependency-check --scan /src --project "Test"
+  - docker run -i --volume dependency-check-data:/usr/share/dependency-check/data --volume "$(pwd)/djangoapp":/src owasp/dependency-check --scan /src --project "Test"
   # Build del contenedor
   - cd djangoapp && docker build -t django_app_image . && cd ..
 

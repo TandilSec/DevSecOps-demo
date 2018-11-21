@@ -1,0 +1,48 @@
+sudo: required
+
+language: python
+
+python: 3.6
+
+services:
+  - docker
+
+install:
+  # Instalar requerimientos de la aplicacion
+  - pip install -r djangoapp/requirements.txt
+
+script:
+  # Correr test de la aplicacion (unit, integration, etc.)
+  - python manage.py test
+  # Chequeo de dependencias
+  - docker pull owasp/dependency-check
+  - mkdir dependency-check-data
+  - docker run -i --volume dependency-check-data:/usr/share/dependency-check/data --volume "$(pwd)":/src owasp/dependency-check --scan /src --project "Test"
+  # Build del contenedor
+  - cd djangoapp && docker build -t django_app_image . && cd ..
+
+  # Lanzo el contenedor
+  - docker run --name django_app -p 8000:8000 -d -t django_app_image
+
+  # Analisis dinamico de codigo
+  - docker pull owasp/zap2docker-stable
+  - docker run -i owasp/zap2docker-stable zap-baseline.py -t http://172.17.0.2:8000/
+
+after_script:
+  # Analisis dinamigo de codigo
+  - docker run -i owasp/zap2docker-stable zap-cli quick-scan --self-contained --start-options '-config api.disablekey=true' http://172.17.0.2:8000/
+
+  # Instalar clair-scanner
+  - go get -u github.com/golang/dep/cmd/dep
+  - git clone https://github.com/arminc/clair-scanner.git src/clair-scanner/
+  - cd src/clair-scanner/ && make ensure && make build
+  # Chequeo de seguridad de contenedor
+  - make db && make clair
+  - ./clair-scanner --ip=172.17.0.1 django_app_image
+
+  # Paro el servicio y elimino la imagen
+  - docker stop django_app
+  - docker rmi django_app_image
+
+
+# Deployment ..

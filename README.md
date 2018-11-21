@@ -1,7 +1,3 @@
-# Introduccion
-
-
-
 
 # Aplicacion base
 
@@ -39,7 +35,6 @@
     docker pull owasp/dependency-check
     docker run -i --volume dependency-check-data:/usr/share/dependency-check/data --volume "$(pwd)":/src owasp/dependency-check --scan /src --project "Test"
 
-
 # Analisis dinamico de codigo
 
     docker pull owasp/zap2docker-stable
@@ -50,17 +45,15 @@
 
 ## Instalar clair-scanner
 
-    git clone https://github.com/coreos/analyze-local-images $HOME/analyze-local-images-gopath/src/github.com/coreos/analyze-local-images
-    export GOPATH=$HOME/analyze-local-images-gopath
-    cd $HOME/analyze-local-images-gopath/src/github.com/coreos/analyze-local-images
-    glide install
-    go install github.com/coreos/analyze-local-images
+    go get -u github.com/golang/dep/cmd/dep
+    git clone https://github.com/arminc/clair-scanner.git src/clair-scanner/
+    cd src/clair-scanner/ && make ensure && make build
 
-## Lanzar una instancia de clair y su base de datos
+## Lanzar una instancia de Clair y su base de datos
 
-    docker run -p 5432:5432 -d --name clair-db arminc/clair-db
-    docker run -p 6060:6060 --link clair-db:postgres -d --name clair arminc/clair-local-scan:v2.0.6
+    make db
+    make clair
 
-## Analizar la imagen
+## Analizar la imagen con Clair
 
-    ./analyze-local-images -endpoint http://172.17.0.3:6060 -my-address 172.17.0.3 django_app_image
+    ./clair-scanner --ip=172.17.0.1 django_app_image

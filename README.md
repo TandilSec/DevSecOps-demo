@@ -1,8 +1,6 @@
 # Introduccion
 
-## Charla de Seguridad en optativa DevOps UNICEN 
-
-<!-- <iframe src="https://docs.google.com/presentation/d/e/2PACX-1vSZZKrs1fqfvyo24vhiQvjtJw_QmV1PFcK1wMBd8ClEDaKW4EYuirDUr7ux4fDV98TkCKAAQ_ZiLkqe/embed?start=false&loop=false&delayms=3000" frameborder="0" width="1280" height="749" allowfullscreen="true" mozallowfullscreen="true" webkitallowfullscreen="true"></iframe> -->
+[Charla de Seguridad en optativa DevOps 2018 - UNICEN](https://docs.google.com/presentation/d/e/2PACX-1vSZZKrs1fqfvyo24vhiQvjtJw_QmV1PFcK1wMBd8ClEDaKW4EYuirDUr7ux4fDV98TkCKAAQ_ZiLkqe/pub?start=false&loop=false&delayms=3000)
 
 
 # Aplicacion base
